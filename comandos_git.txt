@@ -1,0 +1,12 @@
+1- git init - inicializar o repositório
+
+2- git add - adicionar arquivo ao controle de versão
+	- git add "nome_do_arquivo" -> arquivo especificado	
+	- git add . -> todos os arquivos não adicionados 
+
+3 - git commit -m "texto" - submeter os arquivos carregados/adicionados no git add
+
+4 - git remote add origin link_do_projeto - associar repositório local ao remoto
+
+5 - git push - subir arquivos para o GitHub
+	- git push origin branch -> seleciona para qual branch o arquivo deve ser enviado 
