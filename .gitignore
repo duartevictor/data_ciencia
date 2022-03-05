@@ -1,4 +1,6 @@
 *.csv
 *.parquet
-./bases
 *.ipynb_checkpoints
+
+./bases
+.ipynb_checkpoints
