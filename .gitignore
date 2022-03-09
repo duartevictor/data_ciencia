@@ -1,6 +1,7 @@
 *.csv
 *.parquet
 *.ipynb_checkpoints
+*.png
 
 ./bases
 .ipynb_checkpoints
