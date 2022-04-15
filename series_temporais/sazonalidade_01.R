@@ -46,6 +46,15 @@ mm <- decompose(desemp, type = 'multiplicative')
 sazonal.mm <- mm$seasonal
 plot.ts(sazonal.mm)
 
-------
-  
-# média móvel
+indice.sazonal <- mm$figure
+indice.sazonal
+
+# série de média móvel dessazonalizada
+dessaz.mm <- desemp/sazonal.mm
+
+# gráfico
+plot(desemp, ylab = 'taxa desemprego', xlab = 'mês/ano', main = 'taxa de desemprego RMSP')
+par(new = T)
+plot(dessaz, col = 'blue', ann = F, axes = F)
+par(new = T)
+plot(dessaz.mm, col = 'red', ann = F, axes = F)
