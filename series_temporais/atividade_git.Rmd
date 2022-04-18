@@ -1,0 +1,174 @@
+---
+title: "Atividade Git"
+author: "Victor Hugo"
+date: "14/04/2022"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readxl)
+
+prod_industrial <- read_excel('DadosGrupo4.xlsx')
+
+# freq = 12 pois os dados são mensais
+ts_prod_industrial <- ts(prod_industrial[,2], start = c(2002, 1), freq = 12)
+```
+
+
+#### 1. Gráfico das séries: quais componentes (tendência, sazonalidade) são verificados?
+
+```{r}
+plot(ts_prod_industrial, xlab = 'Mês', ylab = 'Produção Industrial', main = 'Produção Industrial (2002 - 2021) - IBGE')
+grid()
+```
+
+#### 2. Faça a decomposição da série temporal em relação aos componentes de tendência, sazonalidade e termo errático, usando polinômio para a tendência e dummies para o componente sazonal. Faça o gráfico dos componentes.
+
+##### componente de tendência
+```{r}
+# tamanho da amostra
+n = length(ts_prod_industrial)
+
+# série temporal de uma sequência de 1 até n
+tend = ts(seq(1, n))
+
+# modelo polinomial
+modelo_polin = lm(ts_prod_industrial ~ tend + I(tend^2))
+#summary(modelo_polin)
+
+# série de tendência
+tend_estimada = ts(fitted(modelo_polin))
+
+plot(tend_estimada)
+```
+
+##### componente de sazonalidade
+
+```{r}
+library(forecast)
+
+# dummies da série temporal
+dummies <- seasonaldummy(ts_prod_industrial)
+
+# modelo com dummies
+modelo_dummies <- lm(ts_prod_industrial ~ dummies)
+#summary(modelo_dummies)
+
+# componente sazonal
+sazonal <- ts(modelo_dummies$fitted.values)
+
+plot(sazonal)
+```
+
+
+##### componente errático
+
+```{r}
+# erros do modelo de tendência
+erros = ts(resid(modelo_polin))
+
+plot(erros)
+```
+
+
+#### 3. A partir do método de médias móveis, faça a decomposição da série temporal para a identificação dos componentes sazonal, de tendência e errático. Faça o gráfico dos componentes.
+
+```{r}
+# multiplicativa pois a variabilidade dos erros não é constante (os erros não são homocedásticos)
+mm <- decompose(ts_prod_industrial, type = 'multiplicative')
+```
+
+##### componente de tendência
+
+```{r}
+trend_mm <- mm$trend
+plot.ts(trend_mm)
+```
+
+##### componente de sazonalidade
+
+```{r}
+sazonal_mm <- mm$seasonal
+plot.ts(sazonal_mm)
+```
+
+##### componente errático
+
+```{r}
+random_mm <- mm$random
+plot.ts(random_mm)
+```
+
+#### 4. Obtenha a série dessazonalizada a partir do procedimento do item 2). Faça o gráfico dessa série.
+
+```{r}
+dessaz_dummies <- ts(modelo_dummies$residuals)
+plot(dessaz_dummies)
+```
+
+#### 5. Obtenha a série dessazonalizada a partir do procedimento do item 3 ). Faça o gráfico dessa série.
+
+```{r}
+dessaz_mm <- ts_prod_industrial/sazonal_mm
+plot(dessaz_mm)
+```
+
+#### 7. Ajuste um modelo de decomposição por polinômio para a tendência e dummies para o componente sazonal, usando os dados até dezembro de 2018;
+
+##### nova série até 12/2018
+```{r}
+# freq = 12 pois os dados são mensais
+ts_prod_industrial_2018 <- ts(prod_industrial[,2], start = c(2002, 1), end = c(2018, 12), freq = 12)
+
+plot(ts_prod_industrial_2018)
+```
+
+```{r}
+# dummies da série temporal
+dummies_2018 <- seasonaldummy(ts_prod_industrial_2018)
+
+# modelo polinomial
+modelo_polin_dummy = lm(ts_prod_industrial_2018 ~ dummies_2018 + I(dummies_2018^2))
+```
+
+#### 8. Ajuste um modelo de decomposição por médias móveis, usando os dados até dezembro de 2018;
+
+```{r}
+mm <- decompose(ts_prod_industrial_2018, type = 'multiplicative')
+```
+
+
+#### 9. Faça a previsão a partir dos modelos ajustados nos itens 7 e 8, período Janeiro de 2019 a Dezembro de 2021;
+
+##### previsão para o modelo polinomial
+
+```{r}
+
+```
+
+##### previsão para o modelo de médias móveis
+
+```{r}
+
+```
+
+
+#### 10. Calcule os erros de previsão RMSE, EMA e EMP e compare o desempenho de ambos modelos em relação aos erros obtidos.
+
+```{r}
+
+```
+
+
+#### 11. Para os modelos ajustados nos itens 2 e 3, faça a previsão 12 passos à frente, ou seja, faça a previsão para o ano de 2022.
+
+```{r}
+
+```
+
